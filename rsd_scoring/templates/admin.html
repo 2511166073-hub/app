@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Quản trị{% endblock %}
+
+{% block content %}
+<h1>Quản trị tổng hợp</h1>
+
+<div class="admin-dashboard">
+    <div class="card">
+        <h3>Quản lý Task</h3>
+        <p>Tạo và quản lý các task cho thành viên</p>
+        <a href="{{ url_for('admin_tasks') }}" class="btn btn-primary">Quản lý Task</a>
+    </div>
+    
+    <div class="card">
+        <h3>Quản lý Buổi họp</h3>
+        <p>Tạo và quản lý các buổi họp</p>
+        <a href="{{ url_for('admin_meetings') }}" class="btn btn-primary">Quản lý Buổi họp</a>
+    </div>
+    
+    <div class="card">
+        <h3>Duyệt minh chứng</h3>
+        <p>Xem và duyệt các minh chứng được nộp</p>
+        <a href="{{ url_for('admin_evidences') }}" class="btn btn-primary">Duyệt minh chứng</a>
+    </div>
+    
+    <div class="card">
+        <h3>Quản lý Người dùng</h3>
+        <p>Quản lý tài khoản người dùng và nhóm</p>
+        <a href="{{ url_for('admin_users') }}" class="btn btn-primary">Quản lý Người dùng</a>
+    </div>
+</div>
+{% endblock %}

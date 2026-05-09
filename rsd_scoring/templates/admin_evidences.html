@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Duyệt minh chứng{% endblock %}
+
+{% block content %}
+<h1>Duyệt minh chứng</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Loại</th>
+            <th>Mô tả</th>
+            <th>File</th>
+            <th>Ngày nộp</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for evidence in evidences %}
+        <tr>
+            <td>{{ evidence.user.username }}</td>
+            <td>
+                {% if evidence.task %}
+                    Task: {{ evidence.task.title }}
+                {% elif evidence.meeting %}
+                    Họp: {{ evidence.meeting.title }}
+                {% endif %}
+            </td>
+            <td>{{ evidence.description[:50] }}...</td>
+            <td>{{ evidence.file_path or 'Không có' }}</td>
+            <td>{{ evidence.submitted_at.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_approve_evidence', evidence_id=evidence.id) }}" style="display:inline;">
+                    <input type="number" name="points" step="0.1" min="0" placeholder="Điểm" style="width:60px;" required>
+                    <button type="submit" class="btn btn-sm btn-success">Duyệt</button>
+                </form>
+                <form method="POST" action="{{ url_for('admin_reject_evidence', evidence_id=evidence.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not evidences %}
+<p>Không có minh chứng nào chờ duyệt.</p>
+{% endif %}
+{% endblock %}

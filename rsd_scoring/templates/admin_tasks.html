@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý Task{% endblock %}
+
+{% block content %}
+<h1>Quản lý Task</h1>
+
+<a href="{{ url_for('create_task') }}" class="btn btn-primary">Tạo Task mới</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tiêu đề</th>
+            <th>Mô tả</th>
+            <th>Điểm</th>
+            <th>Hạn chót</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description[:50] }}...</td>
+            <td>{{ task.points }}</td>
+            <td>{{ task.deadline.strftime('%d/%m/%Y') if task.deadline else '-' }}</td>
+            <td>
+                <a href="{{ url_for('edit_task', task_id=task.id) }}" class="btn btn-sm">Sửa</a>
+                <a href="{{ url_for('delete_task', task_id=task.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc?')">Xóa</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
