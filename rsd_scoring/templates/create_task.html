@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Tạo Task mới{% endblock %}
+
+{% block content %}
+<h1>Tạo Task mới</h1>
+
+<form method="POST" class="form">
+    <div class="form-group">
+        <label for="title">Tiêu đề:</label>
+        <input type="text" id="title" name="title" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Mô tả:</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="points">Điểm:</label>
+        <input type="number" id="points" name="points" step="0.1" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="deadline">Hạn chót:</label>
+        <input type="date" id="deadline" name="deadline">
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo Task</button>
+    <a href="{{ url_for('admin_tasks') }}" class="btn btn-secondary">Hủy</a>
+</form>
+{% endblock %}

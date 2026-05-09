@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Nộp minh chứng{% endblock %}
+
+{% block content %}
+<h1>Nộp minh chứng</h1>
+
+<form method="POST" class="form" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="evidence_type">Loại minh chứng:</label>
+        <select id="evidence_type" name="evidence_type" required>
+            <option value="task">Task</option>
+            <option value="meeting">Buổi họp</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="task_id">Chọn Task:</label>
+        <select id="task_id" name="task_id">
+            {% for task in tasks %}
+            <option value="{{ task.id }}">{{ task.title }} ({{ task.points }} điểm)</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="meeting_id">Chọn Buổi họp:</label>
+        <select id="meeting_id" name="meeting_id">
+            {% for meeting in meetings %}
+            <option value="{{ meeting.id }}">{{ meeting.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Mô tả:</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="file">File đính kèm:</label>
+        <input type="file" id="file" name="file">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Nộp minh chứng</button>
+</form>
+{% endblock %}

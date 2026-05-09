@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Task của tôi{% endblock %}
+
+{% block content %}
+<h1>Task của tôi</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tiêu đề</th>
+            <th>Mô tả</th>
+            <th>Điểm</th>
+            <th>Hạn chót</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description[:50] }}...</td>
+            <td>{{ task.points }}</td>
+            <td>{{ task.deadline.strftime('%d/%m/%Y') if task.deadline else '-' }}</td>
+            <td>
+                {% set evidence = task.evidences | selectattr('user_id', 'equalto', current_user.id) | first %}
+                {% if evidence %}
+                    {% if evidence.status == 'approved' %}
+                        <span class="badge badge-success">Hoàn thành</span>
+                    {% elif evidence.status == 'pending' %}
+                        <span class="badge badge-warning">Đã nộp</span>
+                    {% else %}
+                        <span class="badge badge-danger">Bị từ chối</span>
+                    {% endif %}
+                {% else %}
+                    <span class="badge badge-secondary">Chưa làm</span>
+                {% endif %}
+            </td>
+            <td>
+                {% set evidence = task.evidences | selectattr('user_id', 'equalto', current_user.id) | first %}
+                {% if not evidence or evidence.status == 'rejected' %}
+                    <a href="{{ url_for('submit_evidence') }}" class="btn btn-sm btn-primary">Nộp minh chứng</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

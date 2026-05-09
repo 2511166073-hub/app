@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Minh chứng của tôi{% endblock %}
+
+{% block content %}
+<h1>Minh chứng của tôi</h1>
+
+<a href="{{ url_for('submit_evidence') }}" class="btn btn-primary">Nộp minh chứng mới</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Loại</th>
+            <th>Mô tả</th>
+            <th>File</th>
+            <th>Trạng thái</th>
+            <th>Điểm</th>
+            <th>Ngày nộp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for evidence in evidences %}
+        <tr>
+            <td>
+                {% if evidence.task %}
+                    Task: {{ evidence.task.title }}
+                {% elif evidence.meeting %}
+                    Họp: {{ evidence.meeting.title }}
+                {% endif %}
+            </td>
+            <td>{{ evidence.description[:50] }}...</td>
+            <td>{{ evidence.file_path or 'Không có' }}</td>
+            <td>
+                {% if evidence.status == 'pending' %}
+                    <span class="badge badge-warning">Chờ duyệt</span>
+                {% elif evidence.status == 'approved' %}
+                    <span class="badge badge-success">Đã duyệt</span>
+                {% else %}
+                    <span class="badge badge-danger">Bị từ chối</span>
+                {% endif %}
+            </td>
+            <td>{{ evidence.points_awarded }}</td>
+            <td>{{ evidence.submitted_at.strftime('%d/%m/%Y') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
