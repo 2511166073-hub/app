@@ -59,7 +59,11 @@ def create_app(config_name=None):
 
 def _create_admin_user():
     """Create default admin user if not exists"""
-    admin = User.query.filter_by(username='admin').first()
+    # Use db.session.execute to ensure proper session binding
+    admin = db.session.execute(
+        db.select(User).filter_by(username='admin')
+    ).scalar_one_or_none()
+    
     if not admin:
         admin = User(
             username='admin',
