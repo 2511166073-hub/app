@@ -21,36 +21,30 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual environments
-venv/
-env/
-ENV/
-.venv/
-.env/
+# Environment
+.env
+.env.local
+*.env.*
+
+# Database
+rsd_scoring/instance/*.db
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
-.DS_Store
-Thumbs.db
+*.tmp
 
 # Logs
 *.log
-
-# Environment variables
-.env
-.env.local
-*.env.*
 
 # Coverage
 .coverage
 coverage/
 htmlcov/
 
-# Temporary files
-*.tmp
+# OS
+.DS_Store
+Thumbs.db
 ```

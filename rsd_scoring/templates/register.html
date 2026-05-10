@@ -1,29 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}Đăng ký{% endblock %}
+{% block title %}Đăng ký - RSD Scoring{% endblock %}
 
 {% block content %}
-<h1>Đăng ký</h1>
-
-<form method="POST" class="form">
-    <div class="form-group">
-        <label for="username">Tên đăng nhập:</label>
-        <input type="text" id="username" name="username" required>
-    </div>
-    <div class="form-group">
-        <label for="password">Mật khẩu:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    <div class="form-group">
-        <label for="group_id">Nhóm:</label>
-        <select id="group_id" name="group_id">
-            {% for group in groups %}
-            <option value="{{ group.id }}">{{ group.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Đăng ký</button>
-</form>
-
-<p>Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập ngay</a></p>
+<div class="auth-form">
+    <h1>📝 Đăng ký thành viên mới</h1>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autofocus>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required minlength="6">
+        </div>
+        
+        <div class="form-group">
+            <label for="full_name">Họ và tên</label>
+            <input type="text" id="full_name" name="full_name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="group_name">Tên nhóm</label>
+            <input type="text" id="group_name" name="group_name" required placeholder="Ví dụ: Truyền thông, Sự kiện...">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Đăng ký</button>
+    </form>
+    
+    <p class="auth-link">
+        Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập ngay</a>
+    </p>
+</div>
 {% endblock %}

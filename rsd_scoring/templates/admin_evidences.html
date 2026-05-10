@@ -1,50 +1,76 @@
 {% extends "base.html" %}
 
-{% block title %}Duyệt minh chứng{% endblock %}
+{% block title %}Duyệt minh chứng - RSD Scoring{% endblock %}
 
 {% block content %}
-<h1>Duyệt minh chứng</h1>
+<div class="page-header">
+    <h1>📄 Duyệt minh chứng</h1>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Loại</th>
-            <th>Mô tả</th>
-            <th>File</th>
-            <th>Ngày nộp</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for evidence in evidences %}
-        <tr>
-            <td>{{ evidence.user.username }}</td>
-            <td>
-                {% if evidence.task %}
-                    Task: {{ evidence.task.title }}
-                {% elif evidence.meeting %}
-                    Họp: {{ evidence.meeting.title }}
+{% if evidences %}
+<div class="evidence-list">
+    {% for evidence in evidences %}
+    <div class="evidence-card">
+        <div class="evidence-header">
+            <h3>{{ evidence.description[:50] }}...</h3>
+            <span class="badge badge-{{ evidence.evidence_type }}">{{ evidence.evidence_type }}</span>
+        </div>
+        <div class="evidence-body">
+            <p><strong>Người nộp:</strong> {{ evidence.submitter.full_name }}</p>
+            <p><strong>Loại:</strong> 
+                {% if evidence.evidence_type == 'absence' %}Vắng có phép
+                {% elif evidence.evidence_type == 'task' %}Hoàn thành task
+                {% elif evidence.evidence_type == 'idea' %}Ý tưởng
+                {% elif evidence.evidence_type == 'initiative' %}Chủ động
+                {% elif evidence.evidence_type == 'agenda' %}Nội dung họp
+                {% elif evidence.evidence_type == 'minutes' %}Biên bản họp
                 {% endif %}
-            </td>
-            <td>{{ evidence.description[:50] }}...</td>
-            <td>{{ evidence.file_path or 'Không có' }}</td>
-            <td>{{ evidence.submitted_at.strftime('%d/%m/%Y %H:%M') }}</td>
-            <td>
-                <form method="POST" action="{{ url_for('admin_approve_evidence', evidence_id=evidence.id) }}" style="display:inline;">
-                    <input type="number" name="points" step="0.1" min="0" placeholder="Điểm" style="width:60px;" required>
-                    <button type="submit" class="btn btn-sm btn-success">Duyệt</button>
-                </form>
-                <form method="POST" action="{{ url_for('admin_reject_evidence', evidence_id=evidence.id) }}" style="display:inline;">
-                    <button type="submit" class="btn btn-sm btn-danger">Từ chối</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-{% if not evidences %}
-<p>Không có minh chứng nào chờ duyệt.</p>
+            </p>
+            <p><strong>Mô tả:</strong> {{ evidence.description }}</p>
+            {% if evidence.file_url %}
+            <p><strong>File đính kèm:</strong> <a href="{{ evidence.file_url }}" target="_blank">Xem file</a></p>
+            {% endif %}
+            <p><strong>Thời gian nộp:</strong> {{ evidence.submitted_at.strftime('%d/%m/%Y %H:%M') }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('review_evidence', evidence_id=evidence.id) }}" class="evidence-actions">
+            <div class="form-group">
+                <label>Điểm đề xuất:</label>
+                <select name="points" id="points_{{ evidence.id }}">
+                    {% if evidence.evidence_type == 'absence' %}
+                    <option value="0">0 (duyệt vắng có phép)</option>
+                    {% elif evidence.evidence_type == 'task' %}
+                    <option value="0">0</option>
+                    <option value="1">+1 (hoàn thành sớm)</option>
+                    {% elif evidence.evidence_type == 'idea' %}
+                    <option value="2">+2 (ý tưởng chất lượng)</option>
+                    {% elif evidence.evidence_type == 'initiative' %}
+                    <option value="1">+1 (chủ động)</option>
+                    {% elif evidence.evidence_type == 'agenda' %}
+                    <option value="0">0</option>
+                    <option value="-1">-1 (nộp trễ)</option>
+                    <option value="-2">-2 (không nộp)</option>
+                    {% elif evidence.evidence_type == 'minutes' %}
+                    <option value="0">0</option>
+                    <option value="-1">-1 (nộp trễ)</option>
+                    <option value="-2">-2 (không nộp)</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Ghi chú:</label>
+                <input type="text" name="notes" placeholder="Nhận xét...">
+            </div>
+            <div class="action-buttons">
+                <button type="submit" name="action" value="approve" class="btn btn-success">Duyệt</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger">Từ chối</button>
+            </div>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-data-box">
+    <p>✅ Không có minh chứng nào chờ duyệt</p>
+</div>
 {% endif %}
 {% endblock %}

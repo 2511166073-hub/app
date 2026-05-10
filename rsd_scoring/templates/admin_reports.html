@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Báo cáo & BCN - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📊 Báo cáo cuối năm & Xét BCN</h1>
+</div>
+
+<h2>🏆 Ứng viên BCN (Ban Chủ Nhiệm)</h2>
+<div class="info-box success">
+    <p><strong>Điều kiện xét BCN:</strong> Điểm ≥ 85, Vi phạm ≤ 3 lần/năm, Hoàn thành nhiều deadline, Chủ động, Có ý tưởng, Hỗ trợ team</p>
+</div>
+
+{% if bcn_candidates %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Hạng</th>
+                <th>Họ và tên</th>
+                <th>Nhóm</th>
+                <th>Điểm số</th>
+                <th>Vi phạm</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in bcn_candidates %}
+            <tr class="top-rank">
+                <td>{{ loop.index }}</td>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.group.name if user.group else '-' }}</td>
+                <td class="score">{{ user.score }}</td>
+                <td>{{ user.violations_count }}</td>
+                <td><span class="badge badge-success">Đủ điều kiện</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="no-data">Chưa có ứng viên nào đủ điều kiện BCN</p>
+{% endif %}
+
+<h2>📋 Bảng xếp hạng toàn bộ thành viên</h2>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Hạng</th>
+                <th>Họ và tên</th>
+                <th>Nhóm</th>
+                <th>Điểm số</th>
+                <th>Vi phạm</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in all_users %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.group.name if user.group else '-' }}</td>
+                <td>{{ user.score }}</td>
+                <td>{{ user.violations_count }}</td>
+                <td>
+                    {% if user.score >= 85 and user.violations_count <= 3 %}
+                    <span class="badge badge-success">BCN</span>
+                    {% elif user.violations_count >= 5 %}
+                    <span class="badge badge-danger">Cảnh báo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
