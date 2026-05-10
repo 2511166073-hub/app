@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Theo dõi vi phạm - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>⚠️ Theo dõi vi phạm</h1>
+</div>
+
+<h2>Thành viên có vi phạm</h2>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Họ và tên</th>
+                <th>Nhóm</th>
+                <th>Tổng số vi phạm</th>
+                <th>Điểm hiện tại</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users_with_violations %}
+            <tr class="{% if user.violations_count >= 5 %}danger{% endif %}">
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.group.name if user.group else '-' }}</td>
+                <td>{{ user.violations_count }}</td>
+                <td>{{ user.score }}</td>
+                <td>
+                    {% if user.violations_count >= 5 %}
+                    <span class="badge badge-danger">Cảnh báo cao</span>
+                    {% elif user.violations_count >= 3 %}
+                    <span class="badge badge-warning">Cần lưu ý</span>
+                    {% else %}
+                    <span class="badge badge-info">Bình thường</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="no-data">Không có thành viên nào vi phạm</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h2>Lịch sử vi phạm chi tiết</h2>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Thành viên</th>
+                <th>Loại vi phạm</th>
+                <th>Điểm trừ</th>
+                <th>Mô tả</th>
+                <th>Thời gian</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for violation in violations %}
+            <tr>
+                <td>{{ violation.user.full_name }}</td>
+                <td>{{ violation.violation_type }}</td>
+                <td class="text-danger">-{{ violation.points_deducted }}</td>
+                <td>{{ violation.description[:50] }}...</td>
+                <td>{{ violation.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="no-data">Chưa có vi phạm nào được ghi nhận</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="info-box">
+    <h4>📌 Quy tắc cảnh báo:</h4>
+    <ul>
+        <li>Vắng liên tiếp &gt;2 buổi họp Ban → Cảnh báo</li>
+        <li>Vắng liên tiếp &gt;3 buổi họp CLB → Cảnh báo</li>
+        <li>Tổng vi phạm ≥ 5 lần/năm → Xem xét Out</li>
+    </ul>
+</div>
+{% endblock %}

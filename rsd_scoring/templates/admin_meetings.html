@@ -1,35 +1,43 @@
 {% extends "base.html" %}
 
-{% block title %}Quản lý Buổi họp{% endblock %}
+{% block title %}Quản lý buổi họp - RSD Scoring{% endblock %}
 
 {% block content %}
-<h1>Quản lý Buổi họp</h1>
+<div class="page-header">
+    <h1>📅 Quản lý buổi họp</h1>
+    <a href="{{ url_for('create_meeting') }}" class="btn btn-primary">+ Tạo buổi họp mới</a>
+</div>
 
-<a href="{{ url_for('create_meeting') }}" class="btn btn-primary">Tạo Buổi họp mới</a>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Tiêu đề</th>
-            <th>Ngày</th>
-            <th>Địa điểm</th>
-            <th>Ghi chú</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for meeting in meetings %}
-        <tr>
-            <td>{{ meeting.title }}</td>
-            <td>{{ meeting.date.strftime('%d/%m/%Y %H:%M') }}</td>
-            <td>{{ meeting.location or '-' }}</td>
-            <td>{{ meeting.notes[:30] }}...</td>
-            <td>
-                <a href="{{ url_for('edit_meeting', meeting_id=meeting.id) }}" class="btn btn-sm">Sửa</a>
-                <a href="{{ url_for('delete_meeting', meeting_id=meeting.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc?')">Xóa</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Loại</th>
+                <th>Ngày giờ</th>
+                <th>Người làm ND</th>
+                <th>Người làm BB</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meeting in meetings %}
+            <tr>
+                <td>{{ meeting.title }}</td>
+                <td><span class="badge badge-{{ meeting.meeting_type }}">{{ meeting.meeting_type|upper }}</span></td>
+                <td>{{ meeting.date.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ meeting.agenda_assignee.full_name if meeting.agenda_assignee else '-' }}</td>
+                <td>{{ meeting.minutes_assignee.full_name if meeting.minutes_assignee else '-' }}</td>
+                <td>
+                    <a href="{{ url_for('manage_attendance', meeting_id=meeting.id) }}" class="btn btn-sm">Điểm danh</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="no-data">Chưa có buổi họp nào</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

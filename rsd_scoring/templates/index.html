@@ -1,28 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}Bảng xếp hạng{% endblock %}
+{% block title %}Bảng xếp hạng - RSD Scoring{% endblock %}
 
 {% block content %}
-<h1>Bảng xếp hạng</h1>
+<div class="page-header">
+    <h1>🏆 Bảng xếp hạng thành viên</h1>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Hạng</th>
-            <th>Tên đăng nhập</th>
-            <th>Nhóm</th>
-            <th>Điểm số</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in users %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.group.name if user.group else '-' }}</td>
-            <td>{{ user.score }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="ranking-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Hạng</th>
+                <th>Họ và tên</th>
+                <th>Nhóm</th>
+                <th>Điểm số</th>
+                <th>Số vi phạm</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr class="{% if loop.index <= 3 %}top-rank{% endif %}">
+                <td>
+                    {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}
+                </td>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.group.name if user.group else '-' }}</td>
+                <td class="score">{{ user.score }}</td>
+                <td class="violations">{{ user.violations_count }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="no-data">Chưa có thành viên nào</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
