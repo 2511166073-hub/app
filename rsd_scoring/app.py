@@ -106,7 +106,7 @@ class BonusPoint(db.Model):
     granted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    user = db.relationship('User', backref='bonus_points')
+    user = db.relationship('User', foreign_keys=[user_id], backref='bonus_points')
     granter = db.relationship('User', foreign_keys=[granted_by])
 
 @login_manager.user_loader
