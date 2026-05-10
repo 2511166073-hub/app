@@ -6,14 +6,14 @@ A Flask application for managing club member scoring and attendance tracking.
 import os
 from flask import Flask
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
 
 # Import configuration
 from config import config
+# Import db and models to ensure single instance
+from models import db, User
 
 
 # Initialize extensions
-db = SQLAlchemy()
 login_manager = LoginManager()
 
 
@@ -38,30 +38,27 @@ def create_app(config_name=None):
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     
+    # Configure user loader for Flask-Login
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+    
     # Register blueprints
     from blueprints.auth import auth_bp
     from blueprints.main import main_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     
-    # Configure user loader for Flask-Login
-    @login_manager.user_loader
-    def load_user(user_id):
-        from models import User
-        return User.query.get(int(user_id))
-    
-    # Create database tables
+    # Create database tables and admin user
     with app.app_context():
         db.create_all()
-        create_admin_user()
+        _create_admin_user()
     
     return app
 
 
-def create_admin_user():
+def _create_admin_user():
     """Create default admin user if not exists"""
-    from models import User
-    
     admin = User.query.filter_by(username='admin').first()
     if not admin:
         admin = User(
