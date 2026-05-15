@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Cộng điểm thưởng - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>⭐ Cộng điểm thưởng</h1>
+</div>
+
+<div class="two-columns">
+    <div class="form-card">
+        <h2>Cộng điểm mới</h2>
+        <form method="POST">
+            <div class="form-group">
+                <label for="user_id">Thành viên</label>
+                <select id="user_id" name="user_id" required>
+                    <option value="">-- Chọn thành viên --</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.full_name }} ({{ user.score }} điểm)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="bonus_type">Loại điểm thưởng</label>
+                <select id="bonus_type" name="bonus_type" required>
+                    <option value="early_completion">+1 Hoàn thành sớm task</option>
+                    <option value="idea">+2 Ý tưởng chất lượng</option>
+                    <option value="initiative">+1 Chủ động nhận việc</option>
+                    <option value="no_violation">+3 Không vi phạm nào</option>
+                    <option value="full_attendance">+2 Đi đủ SH Ban và CLB</option>
+                    <option value="custom">Khác (nhập thủ công)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="points">Số điểm</label>
+                <input type="number" id="points" name="points" value="1" min="-5" max="10" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Mô tả</label>
+                <textarea id="description" name="description" rows="3" placeholder="Chi tiết lý do cộng điểm..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Cộng điểm</button>
+        </form>
+    </div>
+    
+    <div class="recent-bonuses">
+        <h2>Lịch sử cộng điểm gần đây</h2>
+        {% if bonuses %}
+        <ul class="bonus-list">
+            {% for bonus in bonuses %}
+            <li>
+                <strong>+{{ bonus.points }}</strong> 
+                <span>{{ bonus.user.full_name }}</span>
+                <small>{{ bonus.description[:40] }}...</small>
+                <span class="date">{{ bonus.created_at.strftime('%d/%m') }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="no-data">Chưa có lịch sử cộng điểm</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

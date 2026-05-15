@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Điểm danh - {{ meeting.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📋 Điểm danh: {{ meeting.title }}</h1>
+    <span class="badge badge-{{ meeting.meeting_type }}">{{ meeting.meeting_type|upper }}</span>
+</div>
+
+<form method="POST" class="form-card">
+    <table class="attendance-table">
+        <thead>
+            <tr>
+                <th>Thành viên</th>
+                <th>Trạng thái</th>
+                <th>Lý do vắng (nếu có)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            {% set attendance = attendances.get(member.id) %}
+            <tr>
+                <td>{{ member.full_name }}</td>
+                <td>
+                    <select name="status_{{ member.id }}" required>
+                        <option value="present" {% if attendance and attendance.status == 'present' %}selected{% endif %}>Có mặt</option>
+                        <option value="absent_excused" {% if attendance and attendance.status == 'absent_excused' %}selected{% endif %}>Vắng có phép</option>
+                        <option value="absent_unexcused" {% if attendance and attendance.status == 'absent_unexcused' %}selected{% endif %}>Vắng không phép</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="excuse_{{ member.id }}" 
+                           value="{{ attendance.excuse_evidence if attendance else '' }}"
+                           placeholder="Giấy tờ, lý do...">
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Lưu điểm danh</button>
+        <a href="{{ url_for('admin_meetings') }}" class="btn btn-secondary">Quay lại</a>
+    </div>
+</form>
+
+<div class="info-box">
+    <h4>📌 Quy tắc trừ điểm:</h4>
+    <ul>
+        <li><strong>Họp CLB:</strong> Vắng có phép: -1 điểm | Vắng không phép: -2 điểm</li>
+        <li><strong>Họp Ban:</strong> Vắng có phép: 0 điểm | Vắng không phép: -1 điểm</li>
+        <li>Vắng liên tiếp >2 buổi Ban hoặc >3 buổi CLB sẽ bị cảnh báo</li>
+    </ul>
+</div>
+{% endblock %}

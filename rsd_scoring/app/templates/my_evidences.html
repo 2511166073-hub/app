@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Minh chứng của tôi - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📄 Minh chứng của tôi</h1>
+    <a href="{{ url_for('submit_evidence') }}" class="btn btn-primary">+ Nộp minh chứng mới</a>
+</div>
+
+{% if evidences %}
+<div class="evidence-list">
+    {% for evidence in evidences %}
+    <div class="evidence-card {% if evidence.status == 'approved' %}approved{% elif evidence.status == 'rejected' %}rejected{% endif %}">
+        <div class="evidence-header">
+            <h3>{{ evidence.description[:50] }}...</h3>
+            <span class="badge badge-{{ evidence.status }}">
+                {% if evidence.status == 'pending' %}Chờ duyệt
+                {% elif evidence.status == 'approved' %}Đã duyệt (+{{ evidence.points }})
+                {% else %}Từ chối{% endif %}
+            </span>
+        </div>
+        <div class="evidence-body">
+            <p><strong>Loại:</strong> 
+                {% if evidence.evidence_type == 'absence' %}Vắng có phép
+                {% elif evidence.evidence_type == 'task' %}Hoàn thành task
+                {% elif evidence.evidence_type == 'idea' %}Ý tưởng
+                {% elif evidence.evidence_type == 'initiative' %}Chủ động
+                {% elif evidence.evidence_type == 'agenda' %}Nội dung họp
+                {% elif evidence.evidence_type == 'minutes' %}Biên bản họp
+                {% endif %}
+            </p>
+            <p><strong>Mô tả:</strong> {{ evidence.description }}</p>
+            <p><strong>Thời gian nộp:</strong> {{ evidence.submitted_at.strftime('%d/%m/%Y %H:%M') }}</p>
+            {% if evidence.reviewed_at %}
+            <p><strong>Duyệt lúc:</strong> {{ evidence.reviewed_at.strftime('%d/%m/%Y %H:%M') }}</p>
+            {% endif %}
+            {% if evidence.review_notes %}
+            <p><strong>Ghi chú:</strong> {{ evidence.review_notes }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-data-box">
+    <p>📝 Bạn chưa nộp minh chứng nào</p>
+    <a href="{{ url_for('submit_evidence') }}" class="btn btn-primary">Nộp minh chứng đầu tiên</a>
+</div>
+{% endif %}
+{% endblock %}
