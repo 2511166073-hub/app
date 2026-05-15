@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Task của tôi - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>✅ Task của tôi</h1>
+</div>
+
+{% if tasks %}
+<div class="task-list">
+    {% for task in tasks %}
+    <div class="task-card {% if task.status == 'overdue' %}overdue{% elif task.status == 'completed' %}completed{% endif %}">
+        <div class="task-header">
+            <h3>{{ task.title }}</h3>
+            <span class="badge badge-{{ task.status }}">
+                {% if task.status == 'pending' %}Chờ hoàn thành
+                {% elif task.status == 'completed' %}Hoàn thành
+                {% else %}Quá hạn{% endif %}
+            </span>
+        </div>
+        <div class="task-body">
+            <p>{{ task.description or 'Không có mô tả' }}</p>
+            <p><strong>Deadline:</strong> {{ task.deadline.strftime('%d/%m/%Y %H:%M') }}</p>
+            {% if task.completed_at %}
+            <p><strong>Hoàn thành lúc:</strong> {{ task.completed_at.strftime('%d/%m/%Y %H:%M') }}</p>
+            {% endif %}
+        </div>
+        {% if task.status == 'pending' %}
+        <div class="task-actions">
+            <a href="{{ url_for('submit_evidence') }}?type=task&task_id={{ task.id }}" class="btn btn-primary">Nộp minh chứng</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-data-box">
+    <p>🎉 Bạn không có task nào!</p>
+</div>
+{% endif %}
+{% endblock %}
