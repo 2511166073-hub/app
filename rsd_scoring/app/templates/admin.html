@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>👨‍💼 Trang quản trị</h1>
+</div>
+
+<div class="admin-stats">
+    <div class="stat-card">
+        <h3>{{ total_users }}</h3>
+        <p>Tổng thành viên</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ total_meetings }}</h3>
+        <p>Tổng buổi họp</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ total_tasks }}</h3>
+        <p>Tổng task</p>
+    </div>
+    <div class="stat-card warning">
+        <h3>{{ pending_evidences }}</h3>
+        <p>Minh chứng chờ duyệt</p>
+    </div>
+</div>
+
+<div class="admin-menu">
+    <h2>Quản lý</h2>
+    <div class="menu-grid">
+        <a href="{{ url_for('admin_meetings') }}" class="menu-item">
+            <span class="icon">📅</span>
+            <h3>Quản lý buổi họp</h3>
+            <p>Tạo và quản lý các buổi họp Ban/CLB</p>
+        </a>
+        <a href="{{ url_for('admin_tasks') }}" class="menu-item">
+            <span class="icon">✅</span>
+            <h3>Quản lý Task</h3>
+            <p>Giao việc và theo dõi deadline</p>
+        </a>
+        <a href="{{ url_for('admin_evidences') }}" class="menu-item">
+            <span class="icon">📄</span>
+            <h3>Duyệt minh chứng</h3>
+            <p>Xem xét và duyệt các minh chứng</p>
+        </a>
+        <a href="{{ url_for('admin_bonus') }}" class="menu-item">
+            <span class="icon">⭐</span>
+            <h3>Cộng điểm thưởng</h3>
+            <p>Ghi nhận đóng góp đặc biệt</p>
+        </a>
+        <a href="{{ url_for('admin_violations') }}" class="menu-item">
+            <span class="icon">⚠️</span>
+            <h3>Theo dõi vi phạm</h3>
+            <p>Xem danh sách vi phạm liên tiếp</p>
+        </a>
+        <a href="{{ url_for('admin_reports') }}" class="menu-item">
+            <span class="icon">📊</span>
+            <h3>Báo cáo & BCN</h3>
+            <p>Đánh giá cuối năm và xét BCN</p>
+        </a>
+    </div>
+</div>
+
+<div class="recent-section">
+    <div class="recent-list">
+        <h2>🕐 Buổi họp gần đây</h2>
+        {% if recent_meetings %}
+        <ul>
+            {% for meeting in recent_meetings %}
+            <li>
+                <strong>{{ meeting.title }}</strong>
+                <span class="badge badge-{{ meeting.meeting_type }}">{{ meeting.meeting_type|upper }}</span>
+                <small>{{ meeting.date.strftime('%d/%m/%Y %H:%M') }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="no-data">Chưa có buổi họp nào</p>
+        {% endif %}
+    </div>
+    
+    <div class="recent-list">
+        <h2>⏳ Task sắp đến hạn</h2>
+        {% if pending_tasks %}
+        <ul>
+            {% for task in pending_tasks %}
+            <li>
+                <strong>{{ task.title }}</strong>
+                <small>Hạn: {{ task.deadline.strftime('%d/%m/%Y %H:%M') }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="no-data">Không có task nào</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

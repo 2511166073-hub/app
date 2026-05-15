@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý Task - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>✅ Quản lý Task</h1>
+    <a href="{{ url_for('create_task') }}" class="btn btn-primary">+ Tạo task mới</a>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Người được giao</th>
+                <th>Deadline</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr class="{% if task.status == 'overdue' %}overdue{% endif %}">
+                <td>{{ task.title }}</td>
+                <td>{{ task.assignee.full_name if task.assignee else '-' }}</td>
+                <td>{{ task.deadline.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    <span class="badge badge-{{ task.status }}">
+                        {% if task.status == 'pending' %}Chờ hoàn thành
+                        {% elif task.status == 'completed' %}Hoàn thành
+                        {% else %}Quá hạn{% endif %}
+                    </span>
+                </td>
+                <td>-</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="no-data">Chưa có task nào</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

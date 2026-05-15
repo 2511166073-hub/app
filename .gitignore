@@ -21,13 +21,12 @@ wheels/
 .installed.cfg
 *.egg
 
-# Environment
-.env
-.env.local
-*.env.*
-
-# Database
-rsd_scoring/instance/*.db
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+.env/
 
 # IDE
 .vscode/
@@ -43,6 +42,11 @@ rsd_scoring/instance/*.db
 .coverage
 coverage/
 htmlcov/
+
+# Environment variables
+.env
+.env.local
+*.env.*
 
 # OS
 .DS_Store

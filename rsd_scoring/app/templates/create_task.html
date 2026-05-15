@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Tạo Task - RSD Scoring{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>✅ Tạo task mới</h1>
+</div>
+
+<form method="POST" class="form-card">
+    <div class="form-group">
+        <label for="title">Tiêu đề task</label>
+        <input type="text" id="title" name="title" required placeholder="Ví dụ: Thiết kế poster sự kiện">
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Mô tả</label>
+        <textarea id="description" name="description" rows="4" placeholder="Chi tiết công việc..."></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label for="assigned_to">Giao cho</label>
+        <select id="assigned_to" name="assigned_to" required>
+            <option value="">-- Chọn thành viên --</option>
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.full_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="deadline">Deadline</label>
+        <input type="datetime-local" id="deadline" name="deadline" required>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Tạo task</button>
+        <a href="{{ url_for('admin_tasks') }}" class="btn btn-secondary">Quay lại</a>
+    </div>
+</form>
+
+<div class="info-box">
+    <h4>📌 Quy tắc điểm:</h4>
+    <ul>
+        <li>Hoàn thành sớm trước deadline: +1 điểm</li>
+        <li>Trễ deadline < 24h: -1 điểm</li>
+        <li>Trễ > 24h hoặc không làm: -2 điểm</li>
+    </ul>
+</div>
+{% endblock %}
